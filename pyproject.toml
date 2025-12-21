@@ -1,0 +1,11 @@
+[project]
+name = "video-analyser"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10.15"
+dependencies = [
+    "google-genai>=1.56.0",
+    "google-cloud-storage>=2.18.2",
+    "streamlit>=1.52.2",
+]
