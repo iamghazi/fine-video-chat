@@ -256,25 +256,17 @@ class EmbeddingGenerator:
             # Return zero vector as fallback
             return [0.0] * self.embedding_dimensions
 
-    def index_video_chunks(self, video_id: str, chunks_metadata_path: str) -> dict:
+    def _process_single_chunk(self, chunk_data: dict, chunk_index: int, total_chunks: int) -> dict:
         """
-        Generate embeddings for all chunks and index them in Qdrant
+        Process a single chunk (generate embeddings) - used for parallel processing
 
-        Returns summary with number of chunks indexed
+        Returns:
+            Chunk data with embeddings added
         """
-        print(f"Generating embeddings and indexing chunks for {video_id}...")
+        chunk_id = chunk_data["chunk_id"]
+        print(f"  [{chunk_index+1}/{total_chunks}] Generating dual embeddings for {chunk_id}...")
 
-        # Load chunk metadata
-        with open(chunks_metadata_path, "r") as f:
-            chunks = json.load(f)
-
-        # Generate embeddings for each chunk
-        chunks_with_embeddings = []
-
-        for i, chunk_data in enumerate(chunks):
-            chunk_id = chunk_data["chunk_id"]
-            print(f"  [{i+1}/{len(chunks)}] Generating dual embeddings for {chunk_id}...")
-
+        try:
             # Generate BOTH text and visual embeddings
             chunk_video_path = chunk_data.get("chunk_video_path")
             text_embedding, visual_embedding = self.generate_dual_embeddings(
@@ -289,7 +281,63 @@ class EmbeddingGenerator:
                 "visual_embedding": visual_embedding
             }
 
-            chunks_with_embeddings.append(chunk_with_embedding)
+            print(f"  ✅ [{chunk_index+1}/{total_chunks}] Completed {chunk_id}")
+            return chunk_with_embedding
+
+        except Exception as e:
+            print(f"  ❌ [{chunk_index+1}/{total_chunks}] Failed {chunk_id}: {e}")
+            # Return chunk with zero embeddings as fallback
+            return {
+                **chunk_data,
+                "text_embedding": [0.0] * self.text_dimensions,
+                "visual_embedding": [0.0] * self.embedding_dimensions
+            }
+
+    def index_video_chunks(self, video_id: str, chunks_metadata_path: str, max_workers: int = 5) -> dict:
+        """
+        Generate embeddings for all chunks IN PARALLEL and index them in Qdrant
+
+        Args:
+            video_id: Video identifier
+            chunks_metadata_path: Path to chunks metadata JSON
+            max_workers: Maximum number of parallel workers (default 5)
+
+        Returns:
+            Summary with number of chunks indexed
+        """
+        print(f"Generating embeddings and indexing chunks for {video_id}...")
+        print(f"  Using {max_workers} parallel workers")
+
+        # Load chunk metadata
+        with open(chunks_metadata_path, "r") as f:
+            chunks = json.load(f)
+
+        # Process chunks in parallel using ThreadPoolExecutor
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        chunks_with_embeddings = [None] * len(chunks)  # Pre-allocate to preserve order
+
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit all chunks for processing
+            future_to_index = {
+                executor.submit(self._process_single_chunk, chunk_data, i, len(chunks)): i
+                for i, chunk_data in enumerate(chunks)
+            }
+
+            # Collect results as they complete
+            for future in as_completed(future_to_index):
+                index = future_to_index[future]
+                try:
+                    result = future.result()
+                    chunks_with_embeddings[index] = result
+                except Exception as e:
+                    print(f"  ❌ Error processing chunk {index}: {e}")
+                    # Use fallback chunk
+                    chunks_with_embeddings[index] = {
+                        **chunks[index],
+                        "text_embedding": [0.0] * self.text_dimensions,
+                        "visual_embedding": [0.0] * self.embedding_dimensions
+                    }
 
         # Index all chunks in Qdrant with dual embeddings
         print(f"  Indexing {len(chunks_with_embeddings)} chunks in Qdrant...")
@@ -386,12 +434,20 @@ class EmbeddingGenerator:
 
 
 # Standalone functions for easy import
-def index_video_in_qdrant(video_id: str, chunks_metadata_path: str) -> dict:
+def index_video_in_qdrant(video_id: str, chunks_metadata_path: str, max_workers: Optional[int] = None) -> dict:
     """
-    Index a video's chunks in Qdrant - convenience function
+    Index a video's chunks in Qdrant with parallel processing - convenience function
+
+    Args:
+        video_id: Video identifier
+        chunks_metadata_path: Path to chunks metadata JSON
+        max_workers: Number of parallel workers (default: from env EMBEDDING_MAX_WORKERS or 5)
     """
+    if max_workers is None:
+        max_workers = int(os.getenv("EMBEDDING_MAX_WORKERS", "5"))
+
     generator = EmbeddingGenerator()
-    return generator.index_video_chunks(video_id, chunks_metadata_path)
+    return generator.index_video_chunks(video_id, chunks_metadata_path, max_workers=max_workers)
 
 
 def search_videos(
