@@ -289,21 +289,29 @@ class VideoVectorDB:
         top_k: int = 5,
         video_id_filter: Optional[str] = None,
         score_threshold: float = 0.3,
+        tier1_candidates: int = 50,
     ) -> list[SearchResult]:
         """
-        Search using BOTH text and visual embeddings with weighted combination.
+        Search using BOTH text and visual embeddings with Reciprocal Rank Fusion (RRF).
+
+        RRF combines rankings from text and visual searches to find chunks that
+        rank high in BOTH dimensions, improving precision over simple weighted averaging.
+
+        Formula: RRF_score = text_weight * (1 / (k + text_rank)) + visual_weight * (1 / (k + visual_rank))
+        where k = 60 (standard RRF constant)
 
         Args:
-            text_query_embedding: Query vector for text (768-dim)
+            text_query_embedding: Query vector for text (3072-dim)
             visual_query_embedding: Query vector for visual (1408-dim)
             text_weight: Weight for text similarity (0.0-1.0)
             visual_weight: Weight for visual similarity (0.0-1.0)
             top_k: Number of results to return
             video_id_filter: Optional filter to search within specific video
-            score_threshold: Minimum combined similarity score (0.0-1.0)
+            score_threshold: Minimum combined similarity score (0.0-1.0, not used in RRF)
+            tier1_candidates: Number of candidates to fetch from each search (default 50)
 
         Returns:
-            List of SearchResult objects ranked by weighted combined score
+            List of SearchResult objects ranked by RRF score
         """
         # Build filter if video_id specified
         query_filter = None
@@ -317,66 +325,64 @@ class VideoVectorDB:
                 ]
             )
 
-        # Search text embeddings
+        # Search text embeddings - fetch Top N candidates
         text_results = self.client.query_points(
             collection_name=self.COLLECTION_NAME,
             query=text_query_embedding,
             using="text",  # Use named vector "text"
-            limit=top_k * 5,  # Fetch more for merging
+            limit=tier1_candidates,  # Fetch more candidates for RRF
             query_filter=query_filter,
             with_payload=True,
         ).points
 
-        # Search visual embeddings
+        # Search visual embeddings - fetch Top N candidates
         visual_results = self.client.query_points(
             collection_name=self.COLLECTION_NAME,
             query=visual_query_embedding,
             using="visual",  # Use named vector "visual"
-            limit=top_k * 5,  # Fetch more for merging
+            limit=tier1_candidates,  # Fetch more candidates for RRF
             query_filter=query_filter,
             with_payload=True,
         ).points
 
-        # Combine scores by chunk_id
-        combined_scores = {}
+        # RECIPROCAL RANK FUSION (RRF)
+        # RRF_score = Σ (1 / (k + rank_i)) where k = 60
+        k = 60  # Standard RRF constant
 
-        # Add text scores
-        for hit in text_results:
-            chunk_id = hit.payload["chunk_id"]
-            text_score = float(hit.score) if hasattr(hit, 'score') else 0.0
-            combined_scores[chunk_id] = {
-                "text_score": text_score,
-                "visual_score": 0.0,
-                "payload": hit.payload
-            }
+        # Build rank maps: chunk_id -> rank (0-indexed)
+        text_ranks = {hit.payload["chunk_id"]: idx for idx, hit in enumerate(text_results)}
+        visual_ranks = {hit.payload["chunk_id"]: idx for idx, hit in enumerate(visual_results)}
 
-        # Add visual scores
-        for hit in visual_results:
-            chunk_id = hit.payload["chunk_id"]
-            visual_score = float(hit.score) if hasattr(hit, 'score') else 0.0
+        # Collect all unique chunk IDs from both searches
+        all_chunk_ids = set(text_ranks.keys()) | set(visual_ranks.keys())
 
-            if chunk_id in combined_scores:
-                combined_scores[chunk_id]["visual_score"] = visual_score
-            else:
-                combined_scores[chunk_id] = {
-                    "text_score": 0.0,
-                    "visual_score": visual_score,
-                    "payload": hit.payload
-                }
+        # Calculate RRF scores for all chunks
+        rrf_scores = {}
+        chunk_payloads = {}
 
-        # Calculate weighted combined scores
-        results = []
-        for chunk_id, data in combined_scores.items():
-            combined_score = (
-                data["text_score"] * text_weight +
-                data["visual_score"] * visual_weight
+        for chunk_id in all_chunk_ids:
+            # Get ranks (use tier1_candidates as max rank if chunk not found in a search)
+            text_rank = text_ranks.get(chunk_id, tier1_candidates)
+            visual_rank = visual_ranks.get(chunk_id, tier1_candidates)
+
+            # Apply RRF formula with weights
+            rrf_score = (
+                text_weight * (1.0 / (k + text_rank)) +
+                visual_weight * (1.0 / (k + visual_rank))
             )
 
-            # Filter by threshold
-            if combined_score < score_threshold:
-                continue
+            rrf_scores[chunk_id] = rrf_score
 
-            payload = data["payload"]
+            # Store payload from whichever search has this chunk
+            if chunk_id in text_ranks:
+                chunk_payloads[chunk_id] = text_results[text_ranks[chunk_id]].payload
+            else:
+                chunk_payloads[chunk_id] = visual_results[visual_ranks[chunk_id]].payload
+
+        # Convert to SearchResult objects
+        results = []
+        for chunk_id, rrf_score in rrf_scores.items():
+            payload = chunk_payloads[chunk_id]
             result = SearchResult(
                 chunk_id=payload["chunk_id"],
                 video_id=payload["video_id"],
@@ -385,13 +391,13 @@ class VideoVectorDB:
                 end_time=payload["end_time"],
                 visual_description=payload["visual_description"],
                 audio_transcript=payload["audio_transcript"],
-                score=combined_score,
+                score=rrf_score,
                 video_path=f"./videos/{payload['video_id']}.mp4",
                 representative_frame=payload["representative_frame"],
             )
             results.append(result)
 
-        # Sort by combined score (descending) and return top_k
+        # Sort by RRF score (descending) and return top_k
         results.sort(key=lambda x: x.score, reverse=True)
         return results[:top_k]
 

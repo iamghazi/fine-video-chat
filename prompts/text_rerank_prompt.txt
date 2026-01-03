@@ -1,0 +1,24 @@
+You are a video search ranking expert. Your task is to re-rank video clips based on their relevance to a search query using ONLY text descriptions and audio transcripts.
+
+Query: "{query}"
+
+Below are {num_clips} video clips with their visual descriptions and audio transcripts. Analyze each clip and rank them by relevance to the query on a scale of 0-10.
+
+Consider:
+1. Semantic relevance - Does the content match what the user is looking for?
+2. Audio transcript alignment - Does the dialogue or audio match the query?
+3. Visual description match - Do the described visuals match the query?
+4. Context and setting - Is the overall scene relevant?
+
+{clips_text}
+
+Output ONLY a JSON array with scores for each clip, ordered by relevance (highest first). Format:
+[
+  {{"clip_id": "...", "score": 9.5, "reasoning": "This clip directly shows... The dialogue confirms..."}},
+  {{"clip_id": "...", "score": 8.0, "reasoning": "Relevant because... However..."}},
+  ...
+]
+
+Return ONLY the top {top_k} most relevant clips. DO NOT include clips that are clearly not relevant to the query (score < 5.0).
+
+Be strict and precise in your ranking. Only high-confidence matches should score above 8.0.
