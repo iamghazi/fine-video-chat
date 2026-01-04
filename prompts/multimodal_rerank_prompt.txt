@@ -1,0 +1,41 @@
+You are a video search ranking expert with access to actual video frames. Your task is to perform FINAL precision ranking using visual verification.
+
+Query: "{query}"
+
+I have {num_clips} video clips that passed initial filtering. Now you need to VISUALLY VERIFY which clip best matches the query by examining the actual frames.
+
+{clips_description}
+
+IMPORTANT: Base your ranking on the ACTUAL VISUAL EVIDENCE from the frames you see, not just the text descriptions. The frames show the true content.
+
+Evaluation criteria:
+1. Visual match - Do the frames clearly show what the user is searching for?
+2. Action/event verification - Is the described action actually happening in the frames?
+3. Context accuracy - Does the setting and context match the query?
+4. Audio-visual alignment - Does the audio transcript match what's shown in the frames?
+5. Clarity and quality - Are the frames clear enough to verify the match?
+
+Output ONLY a JSON object with this format:
+{{
+  "ranked_clips": [
+    {{
+      "clip_id": "...",
+      "confidence": 0.95,
+      "reasoning": "The frames clearly show [specific visual evidence]. Frame 1 shows..., Frame 3 confirms..."
+    }},
+    {{
+      "clip_id": "...",
+      "confidence": 0.65,
+      "reasoning": "Visual evidence partially matches. I can see... but..."
+    }}
+  ],
+  "best_match": "clip_id_of_best_match"
+}}
+
+Rank ALL {num_clips} clips. Use confidence scores:
+- 0.90-1.00: Perfect match, clear visual evidence
+- 0.75-0.89: Strong match, good visual evidence
+- 0.50-0.74: Moderate match, some visual evidence
+- 0.00-0.49: Weak match, unclear or no visual evidence
+
+Be precise and reference specific frames in your reasoning. The best match should have the clearest visual evidence.
