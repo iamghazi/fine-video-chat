@@ -14,3 +14,19 @@ wheels/
 
 # Video files
 *.mp4
+*.mov
+*.avi
+
+# Phase 3: Local storage directories
+videos/*
+!videos/.gitkeep
+frames/*
+!frames/.gitkeep
+metadata/*
+!metadata/.gitkeep
+
+# Phase 3: Qdrant storage
+qdrant_storage/
+
+# Phase 2 backup
+app_phase2.py.bak
