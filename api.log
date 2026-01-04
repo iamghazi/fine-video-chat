@@ -1,0 +1,47 @@
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform_v1beta1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform_v1beta1 past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform_v1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform_v1 past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform.v1.schema.predict.instance_v1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform.v1.schema.predict.instance_v1 past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform.v1.schema.predict.params_v1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform.v1.schema.predict.params_v1 past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform.v1.schema.predict.prediction_v1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform.v1.schema.predict.prediction_v1 past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform.v1.schema.trainingjob.definition_v1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform.v1.schema.trainingjob.definition_v1 past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform.v1beta1.schema.predict.instance_v1beta1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform.v1beta1.schema.predict.instance_v1beta1 past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform.v1beta1.schema.predict.params_v1beta1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform.v1beta1.schema.predict.params_v1beta1 past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform.v1beta1.schema.predict.prediction_v1beta1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform.v1beta1.schema.predict.prediction_v1beta1 past that date.
+  warnings.warn(message, FutureWarning)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.15) which Google will stop supporting in new releases of google.cloud.aiplatform.v1beta1.schema.trainingjob.definition_v1beta1 once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.cloud.aiplatform.v1beta1.schema.trainingjob.definition_v1beta1 past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Started server process [4009]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/vertexai/_model_garden/_model_garden_models.py:278: UserWarning: This feature is deprecated as of June 24, 2025 and will be removed on June 24, 2026. For details, see https://cloud.google.com/vertex-ai/generative-ai/docs/deprecations/genai-vertexai-sdk.
+  warning_logs.show_deprecation_warning()
+✅ Collection exists: video_chunks
+Query embedding error: 429 Quota exceeded for aiplatform.googleapis.com/online_prediction_requests_per_base_model with base model: multimodalembedding. Please submit a quota increase request. https://cloud.google.com/vertex-ai/docs/generative-ai/quotas-genai.
+INFO:     127.0.0.1:56062 - "POST /search HTTP/1.1" 200 OK
+/Users/gs/ai-engineer/video-analyser/.venv/lib/python3.10/site-packages/vertexai/_model_garden/_model_garden_models.py:278: UserWarning: This feature is deprecated as of June 24, 2025 and will be removed on June 24, 2026. For details, see https://cloud.google.com/vertex-ai/generative-ai/docs/deprecations/genai-vertexai-sdk.
+  warning_logs.show_deprecation_warning()
+✅ Collection exists: video_chunks
+Query embedding error: 429 Quota exceeded for aiplatform.googleapis.com/online_prediction_requests_per_base_model with base model: multimodalembedding. Please submit a quota increase request. https://cloud.google.com/vertex-ai/docs/generative-ai/quotas-genai.
+INFO:     127.0.0.1:56140 - "POST /search HTTP/1.1" 200 OK
+✅ Collection exists: video_chunks
+Query embedding error: 429 Quota exceeded for aiplatform.googleapis.com/online_prediction_requests_per_base_model with base model: multimodalembedding. Please submit a quota increase request. https://cloud.google.com/vertex-ai/docs/generative-ai/quotas-genai.
+INFO:     127.0.0.1:56603 - "POST /search HTTP/1.1" 200 OK
+✅ Collection exists: video_chunks
+INFO:     127.0.0.1:56660 - "POST /search HTTP/1.1" 200 OK
+✅ Collection exists: video_chunks
+INFO:     127.0.0.1:56748 - "POST /search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58535 - "GET /videos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58537 - "GET /videos/vid_1766494209/chunks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58539 - "GET /videos/vid_1766488155/chunks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58541 - "GET /videos/vid_1766487571/chunks HTTP/1.1" 200 OK
