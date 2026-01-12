@@ -1,18 +1,10 @@
 <template>
-  <div :class="{ dark: isDark }" class="h-screen overflow-hidden">
+  <div class="h-screen overflow-hidden">
     <router-view />
+    <Toast />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useUIStore } from '@/stores/ui'
-
-const uiStore = useUIStore()
-const { darkMode: isDark } = storeToRefs(uiStore)
-
-onMounted(() => {
-  uiStore.initialize()
-})
+import Toast from '@/components/ui/Toast.vue'
 </script>

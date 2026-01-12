@@ -65,6 +65,15 @@ class SearchQueryRequest(BaseModel):
     confidence_threshold: float = Field(
         0.8, description="Minimum confidence score", ge=0.0, le=1.0
     )
+    video_id_filter: str | None = Field(
+        None, description="Filter results to specific video ID"
+    )
+    score_threshold: float | None = Field(
+        None, description="Minimum score threshold for results", ge=0.0, le=1.0
+    )
+    tier1_candidates: int | None = Field(
+        None, description="Number of tier 1 candidates for reranking", ge=1, le=200
+    )
 
     class Config:
         json_schema_extra = {
@@ -73,6 +82,9 @@ class SearchQueryRequest(BaseModel):
                 "top_k": 5,
                 "use_cascaded_reranking": True,
                 "confidence_threshold": 0.8,
+                "video_id_filter": None,
+                "score_threshold": None,
+                "tier1_candidates": None,
             }
         }
 

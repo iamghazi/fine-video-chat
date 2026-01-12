@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Search AI - Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2463eb",
+                        "primary-hover": "#1d4ed8",
+                        "secondary": "#7c3aed",
+                        "secondary-hover": "#6d28d9",
+                        "background-light": "#f3f4f6",
+                        "background-dark": "#111621",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1f2937",
+                        "success": "#10b981",
+                        "error": "#ef4444",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.375rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white overflow-hidden h-screen flex">
+<!-- Sidebar -->
+<aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between h-full shrink-0 z-20">
+<div class="flex flex-col p-4 gap-6">
+<!-- App Header -->
+<div class="flex flex-col px-2">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]">smart_display</span>
+</div>
+<h1 class="text-slate-900 dark:text-white text-base font-bold leading-none tracking-tight">VideoSearch AI</h1>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium pl-10">Local v1.0.4</p>
+</div>
+<!-- Navigation -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[22px] group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<!-- Active Item -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary dark:text-primary-400 font-semibold transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px] fill-1">settings</span>
+<span class="text-sm">Configuration</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[22px] group-hover:text-primary transition-colors">receipt_long</span>
+<span class="text-sm font-medium">Logs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[22px] group-hover:text-primary transition-colors">database</span>
+<span class="text-sm font-medium">System</span>
+</a>
+</nav>
+</div>
+<!-- Footer / Userless state -->
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 px-2 py-2">
+<div class="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Engine Status: <span class="text-slate-900 dark:text-white font-semibold">Idle</span></p>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Top Bar / Page Header -->
+<header class="h-16 bg-surface-light dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 shrink-0 z-10">
+<div class="flex flex-col">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Settings</h2>
+<p class="text-xs text-slate-500 dark:text-slate-400">Manage system configuration and API connections</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center gap-2 px-4 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">history</span>
+                    Reset to Defaults
+                </button>
+<button class="flex items-center justify-center gap-2 px-4 h-9 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-medium shadow-sm shadow-primary/30 transition-colors">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                    Save Changes
+                </button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-8 pb-24">
+<div class="max-w-4xl mx-auto flex flex-col gap-8">
+<!-- Alert Panel -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-xl border border-red-200 bg-red-50 dark:bg-red-900/10 dark:border-red-900/30">
+<div class="flex gap-4">
+<div class="mt-1 sm:mt-0 p-2 bg-red-100 dark:bg-red-900/30 rounded-full text-error shrink-0">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="text-slate-900 dark:text-white text-base font-bold">Configuration Required</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm">Please set up your Google Cloud Project credentials to start indexing your video library.</p>
+</div>
+</div>
+<button class="shrink-0 px-4 h-9 rounded-lg bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/30 text-error text-sm font-semibold shadow-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        Configure Now
+                    </button>
+</div>
+<!-- Section 1: Google Cloud API -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary">cloud_circle</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Google Cloud API</h3>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<!-- Project ID -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Project ID <span class="text-error">*</span></label>
+<input class="h-11 px-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-900 dark:text-white text-sm placeholder:text-slate-400 transition-all" placeholder="e.g., video-search-App-2024" type="text"/>
+<p class="text-xs text-slate-500">The ID of your GCP project with Vertex AI API enabled.</p>
+</div>
+<!-- Location -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Location <span class="text-error">*</span></label>
+<div class="relative">
+<select class="h-11 w-full px-4 pr-10 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-900 dark:text-white text-sm appearance-none transition-all">
+<option>us-central1 (Iowa)</option>
+<option>europe-west4 (Netherlands)</option>
+<option>asia-east1 (Taiwan)</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-500">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Model Selection -->
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Gemini Model</label>
+<div class="relative">
+<select class="h-11 w-full px-4 pr-10 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-900 dark:text-white text-sm appearance-none transition-all">
+<option>gemini-1.5-pro-latest (Recommended)</option>
+<option>gemini-1.5-flash-latest</option>
+<option>gemini-1.0-pro-vision</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-500">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Test Connection Action -->
+<div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2">
+<span class="flex h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Status: Not Connected</span>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-secondary text-secondary hover:bg-secondary/5 dark:text-secondary-400 dark:border-secondary-400 dark:hover:bg-secondary-400/10 text-sm font-semibold transition-colors">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+                                Test Connection
+                            </button>
+</div>
+</div>
+</section>
+<!-- Section 2: Video Processing -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary">movie_filter</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Video Processing</h3>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Chunk Duration -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Chunk Duration</label>
+<span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">Seconds</span>
+</div>
+<input class="h-11 px-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-900 dark:text-white text-sm transition-all" type="number" value="300"/>
+</div>
+<!-- Overlap -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Overlap</label>
+<span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">Seconds</span>
+</div>
+<input class="h-11 px-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-900 dark:text-white text-sm transition-all" type="number" value="20"/>
+</div>
+<!-- FPS -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Analysis FPS</label>
+<span class="material-symbols-outlined text-[16px] text-slate-400 cursor-help" title="Higher FPS means more detailed analysis but slower processing.">info</span>
+</div>
+<input class="h-11 px-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-900 dark:text-white text-sm transition-all" max="5" min="0.5" step="0.5" type="number" value="1"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Search & Embedding -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary">manage_search</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Search &amp; Embedding</h3>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+<!-- Parallel Workers -->
+<div class="mb-6">
+<div class="flex justify-between mb-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Parallel Workers</label>
+<span class="text-sm font-bold text-primary">4</span>
+</div>
+<input class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" max="16" min="1" type="range" value="4"/>
+<p class="mt-1 text-xs text-slate-500">Number of simultaneous indexing processes. Depends on your CPU cores.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Candidates -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Tier 1 Candidates</label>
+<span class="material-symbols-outlined text-[16px] text-slate-400 cursor-help" title="Number of preliminary results to fetch before re-ranking">info</span>
+</div>
+<input class="h-11 px-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-900 dark:text-white text-sm transition-all" type="number" value="50"/>
+</div>
+<!-- Confidence Threshold -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Confidence Threshold</label>
+<span class="material-symbols-outlined text-[16px] text-slate-400 cursor-help" title="Minimum similarity score required to show a result">info</span>
+</div>
+<div class="relative">
+<input class="h-11 w-full px-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-900 dark:text-white text-sm transition-all" max="1" min="0" step="0.05" type="number" value="0.75"/>
+<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400 text-xs">
+                                        (0.0 - 1.0)
+                                    </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Data Storage -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary">folder_open</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Data Storage</h3>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+<div class="flex flex-col gap-6">
+<!-- Index Path -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Vector Index Path</label>
+<div class="flex gap-2">
+<div class="flex-1 px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-sm font-mono truncate select-all">
+                                        /Users/localuser/Library/Application Support/VideoSearchAI/index
+                                    </div>
+<button class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition-colors">
+                                        Change
+                                    </button>
+</div>
+</div>
+<!-- Cache Path -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Thumbnail Cache</label>
+<div class="flex gap-2">
+<div class="flex-1 px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-sm font-mono truncate select-all">
+                                        /Users/localuser/Library/Caches/VideoSearchAI/thumbnails
+                                    </div>
+<button class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition-colors">
+                                        Change
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Info -->
+<div class="text-center pt-8 pb-4">
+<p class="text-xs text-slate-400 dark:text-slate-600">Video Search AI Local Server v1.0.4 • FastAPI Backend Running on port 8000</p>
+</div>
+</div>
+</div>
+</main>
+</body></html>

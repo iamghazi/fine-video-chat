@@ -90,4 +90,75 @@ export function registerBackendHandlers() {
       throw new Error(`Failed to save settings to backend: ${error}`)
     }
   })
+
+  // Get all videos
+  ipcMain.handle('backend:get-videos', async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/videos`)
+      return response.data
+    } catch (error) {
+      throw new Error(`Failed to get videos: ${error}`)
+    }
+  })
+
+  // Get single video
+  ipcMain.handle('backend:get-video', async (_, videoId: string) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/videos/${videoId}`)
+      return response.data
+    } catch (error) {
+      throw new Error(`Failed to get video: ${error}`)
+    }
+  })
+
+  // Get video chunks
+  ipcMain.handle('backend:get-video-chunks', async (_, videoId: string) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/videos/${videoId}/chunks`)
+      return response.data
+    } catch (error) {
+      throw new Error(`Failed to get video chunks: ${error}`)
+    }
+  })
+
+  // Delete video
+  ipcMain.handle('backend:delete-video', async (_, videoId: string) => {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/videos/${videoId}`)
+      return response.data
+    } catch (error) {
+      throw new Error(`Failed to delete video: ${error}`)
+    }
+  })
+
+  // Search videos
+  ipcMain.handle('backend:search', async (_, query: string, options?: any) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/search`, {
+        query,
+        top_k: options?.topK || 10,
+        use_cascaded_reranking: options?.useCascadedReranking ?? true,
+        confidence_threshold: options?.confidenceThreshold || 0.0,
+        video_id_filter: options?.videoIdFilter,
+        score_threshold: options?.scoreThreshold,
+        tier1_candidates: options?.tier1Candidates
+      })
+      return response.data
+    } catch (error) {
+      throw new Error(`Search failed: ${error}`)
+    }
+  })
+
+  // Chat with clips
+  ipcMain.handle('backend:chat-with-clips', async (_, request: { query: string; clip_ids: string[] }) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/chat`, {
+        query: request.query,
+        clip_ids: request.clip_ids
+      })
+      return response.data
+    } catch (error) {
+      throw new Error(`Chat failed: ${error}`)
+    }
+  })
 }
