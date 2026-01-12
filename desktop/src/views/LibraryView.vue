@@ -110,6 +110,9 @@
       @confirm="handleDeleteConfirm"
       @cancel="showDeleteConfirm = false"
     />
+
+    <!-- Video Player Modal -->
+    <VideoModal />
   </div>
 </template>
 
@@ -117,6 +120,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLibraryStore } from '@/stores/library'
+import { useVideoPlayerStore } from '@/stores/videoPlayer'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -128,10 +132,12 @@ import EmptyState from '@/components/library/EmptyState.vue'
 import UploadProgress from '@/components/library/UploadProgress.vue'
 import VideoDetailModal from '@/components/library/VideoDetailModal.vue'
 import DeleteConfirmation from '@/components/library/DeleteConfirmation.vue'
+import VideoModal from '@/components/video/VideoModal.vue'
 import type { VideoWithState } from '@/types/video'
 
 const router = useRouter()
 const libraryStore = useLibraryStore()
+const videoPlayerStore = useVideoPlayerStore()
 
 const gridColumns = ref(3)
 const uploading = ref(false)
@@ -226,11 +232,8 @@ function handleCancelUpload(fileName: string) {
 }
 
 function handleVideoClick(videoId: string) {
-  const video = libraryStore.videos.find(v => v.video_id === videoId)
-  if (video) {
-    selectedVideo.value = video
-    showDetailModal.value = true
-  }
+  // Open video player with playback
+  videoPlayerStore.openVideo(videoId)
 }
 
 function handleViewDetails(videoId: string) {
@@ -242,8 +245,8 @@ function handleViewDetails(videoId: string) {
 }
 
 function handleViewChunks(videoId: string) {
-  // TODO: Navigate to chunk view or open chunks modal
-  console.log('View chunks for video:', videoId)
+  // Open video player to view chunks
+  videoPlayerStore.openVideo(videoId)
 }
 
 function handleDeleteRequest(videoId: string) {
