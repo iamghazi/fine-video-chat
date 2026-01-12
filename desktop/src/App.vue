@@ -1,6 +1,7 @@
 <template>
   <div class="h-screen overflow-hidden">
     <router-view />
+    <Toast />
   </div>
 </template>
 
@@ -8,6 +9,7 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useUIStore } from '@/stores/ui'
 import { useBackendStore } from '@/stores/backend'
+import Toast from '@/components/ui/Toast.vue'
 
 const uiStore = useUIStore()
 const backendStore = useBackendStore()

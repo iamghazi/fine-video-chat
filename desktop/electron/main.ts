@@ -20,7 +20,8 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       nodeIntegration: false,
-      contextIsolation: true
+      contextIsolation: true,
+      webSecurity: false // Allow file:// protocol for local video playback
     },
     titleBarStyle: 'hiddenInset', // macOS style
     backgroundColor: '#f3f4f6'
