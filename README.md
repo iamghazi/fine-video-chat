@@ -1,75 +1,49 @@
 # Video Library Search Engine
 
-A professional video semantic search engine with AI-powered analysis, chat, and 3-tier cascaded reranking for maximum precision. Includes both a FastAPI backend and a beautiful Electron desktop app.
+A semantic video search engine with AI-powered analysis, chat, and 3-tier cascaded reranking. Includes a FastAPI backend and an Electron desktop app.
 
-## 🖥️ Desktop Application
+## Features
 
-Want to use this with a beautiful native UI? Check out the [Desktop App](./desktop/README.md)!
+- **Semantic Video Search** — Natural language queries with dual embeddings (text + visual)
+- **3-Tier Cascaded Reranking** — Hybrid RRF retrieval → LLM text reranking → multimodal reranking with frame verification
+- **AI-Powered Analysis** — Automatic transcription (Whisper) + visual descriptions (Gemini)
+- **Chat with Clips** — Multi-turn conversations about video clips using Gemini with context caching
+- **Desktop App** — Native Electron + Vue 3 app with custom video player, library management, and settings
 
-The desktop app provides:
-- Native application for macOS, Windows, and Linux
-- Intuitive UI for searching, managing, and chatting with your video library
-- Real-time processing status and visual feedback
-- Custom video player with frame-accurate seeking
-- Settings management with persistent configuration
+## Prerequisites
 
-**Quick start:**
+- **Python 3.10+** with [`uv`](https://docs.astral.sh/uv/) package manager
+- **Node.js 18+** and [Bun](https://bun.sh) (for the desktop app)
+- **FFmpeg** — `brew install ffmpeg` (macOS) or `apt-get install ffmpeg` (Linux)
+- **Docker** (for Qdrant) or a [local Qdrant install](https://qdrant.tech/documentation/quick-start/)
+- **Google Cloud Project** with Vertex AI API enabled
+- **GCP Application Default Credentials**
+
+## Local Setup
+
+### 1. Clone and install Python dependencies
+
 ```bash
-cd desktop
-bun install
-bun run dev
+git clone <repo-url>
+cd video-analyser
+uv pip install -e .
 ```
 
-## 🎯 Features
-
-### Core Capabilities
-- **Semantic Video Search**: Natural language queries with dual embeddings (text + visual)
-- **3-Tier Cascaded Reranking**:
-  - Tier 1: Hybrid RRF retrieval (text + visual)
-  - Tier 2: Text-only LLM reranking
-  - Tier 3: Multimodal LLM reranking with frames
-- **AI-Powered Analysis**: Automatic transcription (Whisper) + visual descriptions (Gemini)
-- **Chat with Clips**: Multi-turn conversations using Gemini with context caching
-- **FastAPI Backend**: Production-ready REST API with async support
-- **Modular Architecture**: Clean separation of concerns, easy to extend
-
-### Technical Highlights
-- Dual embeddings: Text (gemini-embedding-001, 3072-dim) + Visual (multimodalembedding@001, 1408-dim)
-- Reciprocal Rank Fusion (RRF) for hybrid search
-- Intelligent query weight analysis (text-heavy vs visual-heavy)
-- Parallel embedding generation with configurable workers
-- Context caching for efficient chat sessions
-- Vector database: Qdrant with dual named vectors
-
-## 📋 Prerequisites
-
-1. **Python 3.10+** with `uv` package manager
-2. **Google Cloud Project** with Vertex AI API enabled
-3. **GCP Authentication**: Application Default Credentials
-4. **Qdrant**: Vector database (runs locally or via Docker)
-5. **FFmpeg**: For video processing
-
-## 🚀 Backend API Setup
-
-This section covers setting up the FastAPI backend server. If you want to use the desktop app, you'll need to complete these steps first.
-
-### 1. Authenticate with Google Cloud
+### 2. Authenticate with Google Cloud
 
 ```bash
 gcloud auth application-default login
 ```
 
-### 2. Configure Environment
-
-Create `.env` file in project root:
+### 3. Create `.env` in the project root
 
 ```env
-# Google Cloud Configuration
+# Google Cloud
 GCP_PROJECT_ID=your-project-id
 GCP_LOCATION=us-central1
 GEMINI_MODEL=gemini-2.0-flash-exp
 
-# Qdrant Vector Database
+# Qdrant
 QDRANT_HOST=localhost
 QDRANT_PORT=6333
 
@@ -78,7 +52,7 @@ CHUNK_DURATION_SECONDS=30
 CHUNK_OVERLAP_SECONDS=5
 FRAME_EXTRACTION_FPS=1
 
-# Parallel Processing
+# Embeddings
 EMBEDDING_MAX_WORKERS=5
 
 # Cascaded Reranking
@@ -88,57 +62,54 @@ TIER2_MODEL=gemini-2.0-flash-exp
 TIER3_FRAMES_PER_CLIP=5
 CONFIDENCE_THRESHOLD=0.8
 
-# Storage Paths (auto-created)
+# Storage (auto-created)
 VIDEOS_DIR=./data/videos
 FRAMES_DIR=./data/frames
 METADATA_DIR=./data/metadata
 ```
 
-### 3. Install Dependencies
-
-```bash
-# Install all dependencies
-uv pip install -e .
-
-# Or install from requirements
-uv pip install -r requirements.txt
-```
-
 ### 4. Start Qdrant
 
-**Option A: Docker (Recommended)**
 ```bash
 docker run -p 6333:6333 -p 6334:6334 \
     -v $(pwd)/data/qdrant_storage:/qdrant/storage \
     qdrant/qdrant
 ```
 
-**Option B: Local Installation**
-```bash
-# Follow Qdrant installation guide
-# https://qdrant.tech/documentation/quick-start/
-```
+### 5. Start the backend
 
-### 5. Start the API Server
-
-**Development mode (with hot-reload):**
 ```bash
+# Development (hot-reload)
 python run.py
-```
 
-**Production mode:**
-```bash
+# Production
 uvicorn src.main:app --host 0.0.0.0 --port 8000
 ```
 
-The API will be available at:
-- **API**: http://localhost:8000
-- **Interactive Docs**: http://localhost:8000/docs
-- **Alternative Docs**: http://localhost:8000/redoc
+The API is available at `http://localhost:8000` with interactive docs at `/docs`.
 
-## 📚 API Usage
+### 6. Start the desktop app
 
-### Upload a Video
+```bash
+cd desktop
+bun install
+bun run dev
+```
+
+The app connects to the backend at `http://localhost:8000`.
+
+To build distributable binaries:
+
+```bash
+bun run dist        # current platform
+bun run dist:mac    # macOS
+bun run dist:win    # Windows
+bun run dist:linux  # Linux
+```
+
+## API Usage
+
+### Upload a video
 
 ```bash
 curl -X POST "http://localhost:8000/videos/upload" \
@@ -146,14 +117,9 @@ curl -X POST "http://localhost:8000/videos/upload" \
   -F "title=My Video"
 ```
 
-This automatically:
-1. Chunks the video into 30-second segments
-2. Extracts frames at 1 FPS
-3. Generates AI analysis (transcription + visual descriptions)
-4. Creates dual embeddings (text + visual)
-5. Indexes in Qdrant
+This automatically chunks the video, extracts frames, runs AI analysis (transcription + visual descriptions), generates dual embeddings, and indexes everything in Qdrant.
 
-### Search Videos
+### Search videos
 
 ```bash
 curl -X POST "http://localhost:8000/search" \
@@ -166,214 +132,103 @@ curl -X POST "http://localhost:8000/search" \
   }'
 ```
 
-### Chat with Clips
+### Chat with clips
 
 ```bash
 curl -X POST "http://localhost:8000/chat" \
   -H "Content-Type: application/json" \
   -d '{
-    "clip_ids": ["vid_123_0_30", "vid_123_30_60"],
-    "query": "What happens in these clips?"
+    "clip_ids": ["vid_123_0_30"],
+    "query": "What happens in this clip?"
   }'
 ```
 
-### List Videos
+### List videos
 
 ```bash
 curl "http://localhost:8000/videos"
 ```
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 video-analyser/
-├── src/                          # Source code
-│   ├── main.py                  # FastAPI application
-│   ├── core/                    # Core infrastructure
-│   │   ├── config.py           # Settings & configuration
-│   │   ├── constants.py        # Application constants
-│   │   ├── exceptions.py       # Custom exceptions
-│   │   └── logging.py          # Logging setup
-│   ├── models/                  # Pydantic models
-│   │   ├── video.py            # Video metadata models
-│   │   ├── search.py           # Search request/response
-│   │   ├── chat.py             # Chat request/response
-│   │   └── common.py           # Shared models
-│   ├── api/                     # API layer
-│   │   └── routes/
-│   │       ├── health.py       # Health check
-│   │       ├── videos.py       # Video CRUD
-│   │       ├── search.py       # Search endpoint
-│   │       └── chat.py         # Chat endpoint
-│   ├── video_processing/        # Video processing
-│   │   └── service.py          # VideoProcessor
-│   ├── ai_analysis/            # AI analysis
-│   │   └── service.py          # Whisper + Gemini
-│   ├── embeddings/             # Embedding generation
-│   │   └── service.py          # Dual embeddings
-│   ├── search/                 # Search & ranking
-│   │   ├── vector_db.py        # Qdrant wrapper
-│   │   ├── reranker.py         # Text + Multimodal
-│   │   └── service.py          # 3-tier search
-│   ├── chat/                   # Chat with clips
-│   │   └── service.py          # Context caching
-│   └── utils/                  # Utilities
-│       ├── retry.py            # Retry logic
-│       └── prompts.py          # Prompt templates
-├── data/                        # User data (gitignored)
-│   ├── videos/                 # Uploaded videos
-│   ├── frames/                 # Extracted frames
-│   ├── metadata/               # Video metadata
-│   └── qdrant_storage/         # Vector database
-├── tests/                       # Tests
-│   ├── unit/                   # Unit tests
-│   ├── integration/            # Integration tests
-│   └── conftest.py             # Pytest fixtures
-├── docs/                        # Documentation
-│   ├── plans/                  # Planning documents
-│   ├── architecture/           # Architecture docs
-│   └── api/                    # API documentation
-├── prompts/                     # Prompt templates
-│   ├── text_rerank_prompt.txt
-│   └── multimodal_rerank_prompt.txt
-├── run.py                       # Dev server launcher
-├── verify_imports.py            # Import verification
-└── pyproject.toml              # Project configuration
+├── src/                          # Backend (FastAPI)
+│   ├── main.py                  # Application entry point
+│   ├── core/                    # Config, constants, exceptions, logging
+│   ├── models/                  # Pydantic models (video, search, chat)
+│   ├── api/routes/              # REST endpoints
+│   ├── video_processing/        # Chunking and frame extraction
+│   ├── ai_analysis/             # Whisper transcription + Gemini vision
+│   ├── embeddings/              # Dual embedding generation
+│   ├── search/                  # Vector DB, reranker, search service
+│   ├── chat/                    # Chat with context caching
+│   └── utils/                   # Retry logic, prompt templates
+├── desktop/                      # Desktop app (Electron + Vue 3 + TypeScript)
+│   ├── src/main/                # Electron main process
+│   ├── src/renderer/            # Vue app entry
+│   ├── src/components/          # UI components (search, library, chat, settings, video)
+│   ├── src/stores/              # Pinia state management
+│   ├── src/views/               # Main views (Search, Library, Chat, Settings)
+│   └── src/types/               # TypeScript type definitions
+├── data/                         # Runtime data (gitignored)
+│   ├── videos/                  # Uploaded videos
+│   ├── frames/                  # Extracted frames
+│   ├── metadata/                # JSON metadata
+│   └── qdrant_storage/          # Vector database
+├── prompts/                      # LLM prompt templates
+├── tests/                        # Unit and integration tests
+├── docs/                         # Architecture and planning docs
+├── run.py                        # Dev server launcher
+└── pyproject.toml               # Python project config
 ```
 
-## 🔬 How It Works
+## How It Works
 
 ### Video Processing Pipeline
 
-1. **Upload**: Video file saved to `data/videos/`
-2. **Chunking**: Split into 30-second chunks with 5-second overlap
-3. **Frame Extraction**: Extract frames at 1 FPS
-4. **AI Analysis**:
-   - Audio transcription using Whisper (base model)
-   - Visual description using Gemini vision
-   - Enhanced transcript with conversation context
-5. **Embedding Generation** (parallel):
-   - Text embeddings from descriptions + transcripts
-   - Visual embeddings from video chunks
-6. **Indexing**: Store in Qdrant with dual named vectors
+1. **Upload** — Video saved to `data/videos/`
+2. **Chunking** — Split into 30s chunks with 5s overlap
+3. **Frame Extraction** — 1 frame per second
+4. **AI Analysis** — Whisper for audio transcription, Gemini for visual descriptions
+5. **Embedding Generation** — Text embeddings (gemini-embedding-001, 3072-dim) + visual embeddings (multimodalembedding@001, 1408-dim) generated in parallel
+6. **Indexing** — Stored in Qdrant with dual named vectors
 
 ### 3-Tier Cascaded Search
 
-**Tier 1: Hybrid RRF Retrieval**
-- Generate dual query embeddings (text + visual)
-- Analyze query to determine optimal weights
-- Search text and visual vectors separately
-- Combine with Reciprocal Rank Fusion (RRF)
-- Return Top 50 candidates
+| Tier | Method | Output |
+|------|--------|--------|
+| 1 | Hybrid RRF (text + visual embedding search combined with Reciprocal Rank Fusion) | Top 50 candidates |
+| 2 | LLM text-only reranking (Gemini Flash) | Top 5 candidates |
+| 3 | Multimodal LLM reranking with frame verification | Final ranked results with confidence scores |
 
-**Tier 2: Text-Only Reranking**
-- Use Gemini Flash for LLM-based reranking
-- Filter based on text metadata only
-- Return Top 5 high-confidence candidates
-
-**Tier 3: Multimodal Reranking**
-- Load representative frames for each candidate
-- Use Gemini with visual verification
-- Generate confidence scores (0.0-1.0)
-- Return final ranked results
-
-**Result**: 90%+ precision with best match ranked #1
-
-## 🧪 Testing
+## Testing
 
 ```bash
-# Verify all imports
-python verify_imports.py
-
-# Run unit tests
-pytest tests/unit/
-
-# Run integration tests (requires data)
-pytest tests/integration/
-
-# Run all tests
-pytest tests/
+python verify_imports.py   # Verify all imports
+pytest tests/unit/         # Unit tests
+pytest tests/integration/  # Integration tests (requires data)
+pytest tests/              # All tests
 ```
 
-## 🐳 Docker Deployment
+## Troubleshooting
 
-```bash
-# Start Qdrant + API
-docker-compose up -d
+| Problem | Solution |
+|---------|----------|
+| Import errors | Run `python verify_imports.py` |
+| Qdrant connection failed | Ensure Qdrant is running on port 6333 |
+| FFmpeg not found | `brew install ffmpeg` (macOS) or `apt-get install ffmpeg` (Linux) |
+| Slow embedding generation | Increase `EMBEDDING_MAX_WORKERS` in `.env` |
+| Low search precision | Enable cascaded reranking, adjust `CONFIDENCE_THRESHOLD` |
+| Desktop blank screen | Open dev tools (View > Toggle Developer Tools) |
 
-# View logs
-docker-compose logs -f api
+## Security
 
-# Stop services
-docker-compose down
-```
+- `.env` is gitignored — never commit credentials
+- GCP auth uses Application Default Credentials
+- Qdrant runs on localhost only
+- CORS restricted to localhost origins
 
-## 📖 Documentation
+## License
 
-- **Planning**: `docs/plans/` - Project plans and roadmaps
-- **Architecture**: `docs/architecture/` - System design and overview
-- **API Docs**: Available at `/docs` when server is running
-
-## 🔧 Development
-
-### Import Verification
-```bash
-python verify_imports.py
-```
-
-### Code Structure
-- Follow feature-based module organization
-- Use dependency injection via FastAPI
-- Centralize configuration in `src/core/config.py`
-- Add logging instead of print statements
-- Write tests alongside features
-
-### Adding a New Feature
-
-1. Create module in appropriate `src/` directory
-2. Add models to `src/models/`
-3. Create API route in `src/api/routes/`
-4. Register router in `src/main.py`
-5. Add tests in `tests/`
-6. Update documentation
-
-## 🎯 Performance
-
-- **Embedding Generation**: Parallel processing (5 workers default)
-- **Search Latency**: <2s for Tier 1, ~5s for full 3-tier
-- **Accuracy**: 90%+ precision with cascaded reranking
-- **Scalability**: Handles 100+ videos with Qdrant
-
-## 🔐 Security Notes
-
-- `.env` file is gitignored - never commit credentials
-- Use Application Default Credentials for GCP auth
-- Qdrant runs on localhost by default
-- CORS configured for localhost origins only
-
-## 🐛 Troubleshooting
-
-**Import errors**: Run `python verify_imports.py` to check all modules
-
-**Qdrant connection failed**: Ensure Qdrant is running on port 6333
-
-**Slow embedding generation**: Increase `EMBEDDING_MAX_WORKERS` in `.env`
-
-**Low search precision**: Enable cascaded reranking and adjust `CONFIDENCE_THRESHOLD`
-
-**FFmpeg not found**: Install with `brew install ffmpeg` (macOS) or `apt-get install ffmpeg` (Linux)
-
-## 📝 License
-
-MIT License - See LICENSE file for details
-
-## 🙏 Acknowledgments
-
-- **Google Vertex AI**: Gemini models and multimodal embeddings
-- **OpenAI Whisper**: Audio transcription
-- **Qdrant**: Vector database
-- **FastAPI**: Web framework
-
----
-
-**Ready to search your video library? Start the server with `python run.py`!**
+MIT
